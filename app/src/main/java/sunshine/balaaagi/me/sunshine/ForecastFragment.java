@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,6 +29,31 @@ public class ForecastFragment extends Fragment {
 
     public ForecastFragment() {
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public  void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.forecastfragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id=item.getItemId();
+        if(id==R.id.action_refresh){
+            FetchWeatherTask weatherTask=new FetchWeatherTask();
+            weatherTask.execute();
+            return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +81,7 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
     public class FetchWeatherTask extends AsyncTask<String,Void,String>{
-
+        private final String LOG_TAG=FetchWeatherTask.class.getSimpleName();
         @Override
         protected String doInBackground(String... strings) {
                                 HttpURLConnection urlConnection=null;
@@ -84,9 +112,9 @@ public class ForecastFragment extends Fragment {
                         }
                         jsonFromReader=buffer.toString();
                     } catch (MalformedURLException e) {
-                        Log.e("MainAcitivityFragment","error",e);
+                        Log.e(LOG_TAG,"error",e);
                     } catch (IOException e) {
-                        Log.e("MainAcitivityFragment","error",e);
+                        Log.e(LOG_TAG,"error",e);
                     }finally {
                         if(urlConnection!=null){
                             urlConnection.disconnect();
@@ -95,10 +123,12 @@ public class ForecastFragment extends Fragment {
                             try {
                                 reader.close();
                             } catch (IOException e) {
-                                Log.e("MainAcitivityFragment","error while closing Stream",e);
+                                Log.e(LOG_TAG,"error while closing Stream",e);
                             }
                         }
                     }
+            Log.d("Json",jsonFromReader);
+
             return jsonFromReader;
         }
     }
