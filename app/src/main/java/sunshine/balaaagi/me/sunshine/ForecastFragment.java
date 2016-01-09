@@ -97,9 +97,11 @@ public class ForecastFragment extends Fragment {
                 JSONObject singleDayForeCast=tempforecastArray.getJSONObject(i);
                 JSONArray weatherDetails=singleDayForeCast.getJSONArray("weather");
                 JSONObject temperatureDetails=singleDayForeCast.getJSONObject("temp");
+
+
                 SimpleDateFormat dateFormat=new SimpleDateFormat("EEE MMM dd");
 
-                String date=dateFormat.format(Long.parseLong(singleDayForeCast.getString("dt")));
+                String date=dateFormat.format(singleDayForeCast.getLong("dt")*1000);
                 String highTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("max")));
                 String lowTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("min")));
 
