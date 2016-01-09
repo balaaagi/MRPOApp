@@ -9,5 +9,9 @@
     tools:context="sunshine.balaaagi.me.sunshine.DetailActivityFragment"
     tools:showIn="@layout/activity_detail">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/forecast_details"/>
 
 </RelativeLayout>
