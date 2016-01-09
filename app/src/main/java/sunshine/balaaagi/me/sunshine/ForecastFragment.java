@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,13 +25,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment {
-
+    private final String LOG_TAG=ForecastFragment.class.getSimpleName();
+    ArrayAdapter<String> climateAdapter;
     public ForecastFragment() {
     }
 
@@ -75,23 +81,55 @@ public class ForecastFragment extends Fragment {
         fakeClimateData.add("Thursday- Sunny -88/99");
         fakeClimateData.add("Friday- Sunny -88/99");
         fakeClimateData.add("Saturday- Sunny -88/99");
-        ArrayAdapter<String> climateAdapter=new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_texview,fakeClimateData);
+        climateAdapter=new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_texview,fakeClimateData);
         ListView climateListView = (ListView) rootView.findViewById(R.id.listview_forescast);
         climateListView.setAdapter(climateAdapter);
 
         return rootView;
     }
-    public class FetchWeatherTask extends AsyncTask<String,Void,String>{
+    public class FetchWeatherTask extends AsyncTask<String,Void,String[]>{
         private final String LOG_TAG=FetchWeatherTask.class.getSimpleName();
+        private String[] getdataFromJson(String jsonFromReader, int countOfDays) throws JSONException {
+            String[] weatherData = new String[countOfDays];
+            JSONObject forecastJSON=new JSONObject(jsonFromReader);
+            JSONArray tempforecastArray=forecastJSON.getJSONArray("list");
+            for(int i=0;i<tempforecastArray.length();i++){
+                JSONObject singleDayForeCast=tempforecastArray.getJSONObject(i);
+                JSONArray weatherDetails=singleDayForeCast.getJSONArray("weather");
+                JSONObject temperatureDetails=singleDayForeCast.getJSONObject("temp");
+                SimpleDateFormat dateFormat=new SimpleDateFormat("EEE MMM dd");
+
+                String date=dateFormat.format(Long.parseLong(singleDayForeCast.getString("dt")));
+                String highTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("max")));
+                String lowTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("min")));
+
+                String forecastDescripton=weatherDetails.getJSONObject(0).getString("description");
+                weatherData[i]=date+"-"+forecastDescripton+"-"+highTemperature+"/"+lowTemperature;
+                Log.d(LOG_TAG,weatherData[i]);
+            }
+            return weatherData;
+        }
+
         @Override
-        protected String doInBackground(String... strings) {
+        protected void onPostExecute(String[] strings) {
+
+            if(strings!=null){
+                climateAdapter.clear();
+                for(String forecast:strings){
+                    climateAdapter.add(forecast);
+                }
+            }
+        }
+
+        @Override
+        protected String[] doInBackground(String... strings) {
                                 HttpURLConnection urlConnection=null;
                     BufferedReader reader=null;
                     String jsonFromReader=null;
             String format="json";
             String units="metric";
             int countOfDays=7;
-
+            String[] weatherDataFromJSON=null;
                     try{
                         final String BASE_URL="http://api.openweathermap.org/data/2.5/forecast/daily?";
                         final String QUERY_PARAM="q";
@@ -128,11 +166,12 @@ public class ForecastFragment extends Fragment {
 
                         }
                         jsonFromReader=buffer.toString();
+//                        weatherDataFromJSON=getdataFromJson(jsonFromReader,countOfDays);
                     } catch (MalformedURLException e) {
                         Log.e(LOG_TAG,"error",e);
                     } catch (IOException e) {
                         Log.e(LOG_TAG,"error",e);
-                    }finally {
+                    } finally {
                         if(urlConnection!=null){
                             urlConnection.disconnect();
                         }
@@ -146,7 +185,17 @@ public class ForecastFragment extends Fragment {
                     }
             Log.d("Json",jsonFromReader);
 
-            return jsonFromReader;
+            try {
+                return getdataFromJson(jsonFromReader,countOfDays);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
+
+
+
+
     }
+
 }
