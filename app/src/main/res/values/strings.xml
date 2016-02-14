@@ -65,4 +65,7 @@
     <string name="pref_title_lcoation">Location</string>
     <string name="pref_location_defaultValue">91500</string>
     <string name="pref_location_key">location</string>
+    <string name="measurement_Settings_title">Measurement</string>
+    <string name="measurement_key">measurement_unit</string>
+    <string name="units_summary">Units of Measurement</string>
 </resources>

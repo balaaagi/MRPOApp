@@ -11,6 +11,15 @@
 
     </EditTextPreference>
 
+    <ListPreference
+        android:title="@string/measurement_Settings_title"
+        android:key="@string/measurement_key"
+        android:entries="@array/measurement_unit"
+        android:summary="@string/units_summary"
+        android:entryValues="@array/measurement_unit_values"/>
+
+
+
 
 
 </PreferenceScreen>

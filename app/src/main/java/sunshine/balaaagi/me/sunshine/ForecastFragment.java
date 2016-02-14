@@ -54,19 +54,28 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        updateweather();
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id=item.getItemId();
         if(id==R.id.action_refresh){
-            FetchWeatherTask weatherTask=new FetchWeatherTask();
-            SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String location=prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_defaultValue));
-            weatherTask.execute(location);
+            updateweather();
             return true;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateweather() {
+        FetchWeatherTask weatherTask=new FetchWeatherTask();
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location=prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_defaultValue));
+        String units=prefs.getString("measurement_unit","metric");
+        weatherTask.execute(location,units);
+    }
 
 
     @Override
@@ -147,7 +156,7 @@ public class ForecastFragment extends Fragment {
                     BufferedReader reader=null;
                     String jsonFromReader=null;
             String format="json";
-            String units="metric";
+            String units=strings[1];
             int countOfDays=7;
             String[] weatherDataFromJSON=null;
                     try{
