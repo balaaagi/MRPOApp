@@ -1,7 +1,10 @@
 package sunshine.balaaagi.me.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -36,6 +39,20 @@ public class DetailActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             return true;
         }
+        if(id==R.id.action_mapview){
+            SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+            String location=prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_defaultValue));
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri geolocation =Uri.parse("geo:0,0?").buildUpon()
+                    .appendQueryParameter("q",location)
+                    .build();
+            intent.setData(geolocation);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            }
+            return true;
+        }
+
         return true;
     }
 

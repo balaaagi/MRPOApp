@@ -69,4 +69,5 @@
     <string name="measurement_Settings_title">Measurement</string>
     <string name="measurement_key">measurement_unit</string>
     <string name="units_summary">Units of Measurement</string>
+    <string name="action_shareaction">Share</string>
 </resources>
