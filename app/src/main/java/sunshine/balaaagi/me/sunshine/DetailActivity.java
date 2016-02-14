@@ -32,6 +32,10 @@ public class DetailActivity extends AppCompatActivity {
         if(id==R.id.action_settings){
             startActivity(new Intent(this,SettingsActivity.class));
         }
+        if (id == android.R.id.home) {
+            startActivity(new Intent(this, MainActivity.class));
+            return true;
+        }
         return true;
     }
 
