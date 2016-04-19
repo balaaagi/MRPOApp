@@ -1,4 +1,4 @@
-package sunshine.balaaagi.me.sunshine;
+package mrpo.balaaagi.me.mrpo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
@@ -14,8 +15,40 @@ import android.widget.ShareActionProvider;
 public class MainActivity extends AppCompatActivity {
     String errorMessage="No NetWork";
     private ShareActionProvider mshareActionProvider;
+
+    @Override
+    protected void onStart(){
+        Log.i("LifeCycle","OnStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop(){
+        Log.i("LifeCycle","OnStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume(){
+        Log.i("LifeCycle","OnResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+        Log.i("LifeCycle","OnPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy(){
+        Log.i("LifeCycle","OnDestroy");
+        super.onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("LifeCycle","OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

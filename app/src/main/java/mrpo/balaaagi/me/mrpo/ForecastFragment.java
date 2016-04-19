@@ -1,8 +1,10 @@
-package sunshine.balaaagi.me.sunshine;
+package mrpo.balaaagi.me.mrpo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,7 +32,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -58,6 +59,7 @@ public class ForecastFragment extends Fragment {
         super.onStart();
         updateweather();
     }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id=item.getItemId();
@@ -74,7 +76,7 @@ public class ForecastFragment extends Fragment {
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
         String location=prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_defaultValue));
         String units=prefs.getString("measurement_unit","metric");
-        weatherTask.execute(location,units);
+        weatherTask.execute("600096","Farenheit");
     }
 
 
@@ -85,20 +87,12 @@ public class ForecastFragment extends Fragment {
         View rootView=inflater.inflate(R.layout.fragment_main, container, false);
         ArrayList<String> fakeClimateData=new ArrayList<String>();
 
-        fakeClimateData.add("Today- Sunny - 88/63");
-        fakeClimateData.add("Tommorow- Sunny -88/99");
-        fakeClimateData.add("Wednesday- Sunny -88/99");
-        fakeClimateData.add("Thursday- Sunny -88/99");
-        fakeClimateData.add("Friday- Sunny -88/99");
-        fakeClimateData.add("Saturday- Sunny -88/99");
-        fakeClimateData.add("Monday- Sunny - 88/63");
-        fakeClimateData.add("Tuesday- Sunny -88/99");
-        fakeClimateData.add("Wednesday- Sunny -88/99");
-        fakeClimateData.add("Thursday- Sunny -88/99");
-        fakeClimateData.add("Friday- Sunny -88/99");
-        fakeClimateData.add("Saturday- Sunny -88/99");
+        fakeClimateData.add("Medicine Name - Date of Prescription");
+        fakeClimateData.add("Medicine Name - Date of Prescription");
+        fakeClimateData.add("Medicine Name - Date of Prescription");
         climateAdapter=new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_texview,fakeClimateData);
         final ListView climateListView = (ListView) rootView.findViewById(R.id.listview_forescast);
+//        )
         climateListView.setAdapter(climateAdapter);
         climateListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,23 +111,35 @@ public class ForecastFragment extends Fragment {
     public class FetchWeatherTask extends AsyncTask<String,Void,String[]>{
         private final String LOG_TAG=FetchWeatherTask.class.getSimpleName();
         private String[] getdataFromJson(String jsonFromReader, int countOfDays) throws JSONException {
-            String[] weatherData = new String[countOfDays];
-            JSONObject forecastJSON=new JSONObject(jsonFromReader);
-            JSONArray tempforecastArray=forecastJSON.getJSONArray("list");
-            for(int i=0;i<tempforecastArray.length();i++){
-                JSONObject singleDayForeCast=tempforecastArray.getJSONObject(i);
-                JSONArray weatherDetails=singleDayForeCast.getJSONArray("weather");
-                JSONObject temperatureDetails=singleDayForeCast.getJSONObject("temp");
+//            String[] weatherData = new String[countOfDays];
+//            JSONObject forecastJSON=new JSONObject(jsonFromReader);
+//            JSONArray tempforecastArray=forecastJSON.getJSONArray("list");
+            JSONArray tempMedicinesArray=new JSONArray(jsonFromReader);
+            String[] weatherData = new String[tempMedicinesArray.length()];
+            for(int i=0;i<tempMedicinesArray.length();i++){
+                JSONObject singleDayForeCast=tempMedicinesArray.getJSONObject(i);
+                String Medicine_name=singleDayForeCast.getString("medicine");
+                String days=singleDayForeCast.getString("days");
+//                String[] morning=singleDayForeCast..getString("morning");
+                System.out.println(singleDayForeCast.get("partsofdays"));
+//                JSONArray partsofdays=singleDayForeCast.getJSONArray("partsofdays");
+//                for(int j=0;i<partsofdays.length();j++){
+//                    System.out.println(partsofdays.get(j));
+//                }
+//                JSONArray weatherDetails=singleDayForeCast.getJSONArray("weather");
+//                JSONObject temperatureDetails=singleDayForeCast.getJSONObject("temp");
 
 
-                SimpleDateFormat dateFormat=new SimpleDateFormat("EEE MMM dd");
-
-                String date=dateFormat.format(singleDayForeCast.getLong("dt")*1000);
-                String highTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("max")));
-                String lowTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("min")));
-
-                String forecastDescripton=weatherDetails.getJSONObject(0).getString("description");
-                weatherData[i]=date+"-"+forecastDescripton+"-"+highTemperature+"/"+lowTemperature;
+//                SimpleDateFormat dateFormat=new SimpleDateFormat("EEE MMM dd");
+//
+//                String date=dateFormat.format(singleDayForeCast.getLong("dt")*1000);
+//                String highTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("max")));
+//                String lowTemperature=String.valueOf(Math.round(temperatureDetails.getDouble("min")));
+//
+//                String forecastDescripton=weatherDetails.getJSONObject(0).getString("description");
+                Log.d(LOG_TAG,"index "+i);
+                weatherData[i]=Medicine_name+"%"+days;
+//                weatherData[i]=date+"-"+forecastDescripton+"-"+highTemperature+"/"+lowTemperature;
                 Log.d(LOG_TAG,weatherData[i]);
             }
             return weatherData;
@@ -141,13 +147,18 @@ public class ForecastFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] strings) {
-
+            Log.d(LOG_TAG,"Before Loop");
+//            System.out.println(strings.length);
             if(strings!=null){
                 climateAdapter.clear();
                 for(String forecast:strings){
+                    Log.d(LOG_TAG,"Inside Post Execute"+" "+forecast);
                     climateAdapter.add(forecast);
                 }
+            }else{
+                Toast.makeText(getActivity(),"No Network Try again!",Toast.LENGTH_LONG).show();
             }
+            Log.d(LOG_TAG,"After Loop");
         }
 
         @Override
@@ -160,41 +171,54 @@ public class ForecastFragment extends Fragment {
             int countOfDays=7;
             String[] weatherDataFromJSON=null;
                     try{
-                        final String BASE_URL="http://api.openweathermap.org/data/2.5/forecast/daily?";
+//                        http://localhost:3000/getPrescriptions/SA123
+                        final String BASE_URL="http://labs.balaaagi.me:6200/getPrescriptions/SA1234";
                         final String QUERY_PARAM="q";
                         final String FORMAT_PARAM="mode";
                         final String UNITS_PARAM="units";
                         final String DAYS_PARAM="cnt";
-                        Uri buildUri=Uri.parse(BASE_URL)    .buildUpon()
-                                .appendQueryParameter(QUERY_PARAM,strings[0])
-                                .appendQueryParameter(FORMAT_PARAM,format)
-                                .appendQueryParameter(UNITS_PARAM,units)
-                                .appendQueryParameter(DAYS_PARAM,Integer.toString(countOfDays))
-                                .appendQueryParameter("APPID",BuildConfig.OPEN_WEATHER_MAP_API_KEY)
-                                .build();
+//                        Uri buildUri=Uri.parse(BASE_URL).buildUpon().build();
+//                                .buildUpon()
+//                                .appendQueryParameter(QUERY_PARAM,strings[0])
+//                                .appendQueryParameter(FORMAT_PARAM,format)
+//                                .appendQueryParameter(UNITS_PARAM,units)
+//                                .appendQueryParameter(DAYS_PARAM,Integer.toString(countOfDays))
+//                                .appendQueryParameter("APPID",BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+//                                .build();
 //                        String apiKey="&APPID=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
 
-                        URL url=new URL(buildUri.toString());
-                        Log.v(LOG_TAG,"Build URI" + buildUri.toString());
-                        urlConnection= (HttpURLConnection) url.openConnection();
-                        urlConnection.setRequestMethod("GET");
-                        urlConnection.connect();
-                        InputStream inputStream=urlConnection.getInputStream();
-                        StringBuffer buffer=new StringBuffer();
-                        if(inputStream==null){
-                            return null;
+                        ConnectivityManager cmgr=(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                        NetworkInfo ntwInfo=cmgr.getActiveNetworkInfo();
+                        if(ntwInfo!=null && ntwInfo.isConnected()){
+                            URL url=new URL(BASE_URL.toString());
+//                        Log.v(LOG_TAG,"Build URI" + buildUri.toString());
+                            urlConnection= (HttpURLConnection) url.openConnection();
+                            urlConnection.setRequestMethod("GET");
+                            urlConnection.connect();
+                            InputStream inputStream=urlConnection.getInputStream();
+                            StringBuffer buffer=new StringBuffer();
+                            if(inputStream==null){
+                                System.out.println("Stream is null");
+                                return null;
 
-                        }
-                        reader=new BufferedReader(new InputStreamReader(inputStream));
-                        String line;
-                        while((line=reader.readLine())!=null){
-                            buffer.append(line);
-                        }
-                        if(buffer.length()==0){
-                            return null;
+                            }
+                            reader=new BufferedReader(new InputStreamReader(inputStream));
+//                        System.out.println(reader);
+                            String line;
+                            while((line=reader.readLine())!=null){
+                                buffer.append(line);
+                            }
+                            if(buffer.length()==0){
+                                return null;
 
+                            }
+                            System.out.println("Before Tro String");
+                            jsonFromReader=buffer.toString();
+                            System.out.println("After Tro String");
+                            countOfDays=buffer.length();
                         }
-                        jsonFromReader=buffer.toString();
+
+
 //                        weatherDataFromJSON=getdataFromJson(jsonFromReader,countOfDays);
                     } catch (MalformedURLException e) {
                         Log.e(LOG_TAG,"error",e);
@@ -212,10 +236,11 @@ public class ForecastFragment extends Fragment {
                             }
                         }
                     }
-            Log.d("Json",jsonFromReader);
+//            Log.d("Json",jsonFromReader);
 
             try {
-                return getdataFromJson(jsonFromReader,countOfDays);
+                if(jsonFromReader!=null)
+                    return getdataFromJson(jsonFromReader,countOfDays);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

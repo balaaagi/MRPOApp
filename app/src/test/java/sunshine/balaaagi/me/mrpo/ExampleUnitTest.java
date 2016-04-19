@@ -1,4 +1,4 @@
-package sunshine.balaaagi.me.sunshine;
+package sunshine.balaaagi.me.mrpo;
 
 import org.junit.Test;
 

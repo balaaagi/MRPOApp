@@ -1,4 +1,4 @@
-package sunshine.balaaagi.me.sunshine;
+package mrpo.balaaagi.me.mrpo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

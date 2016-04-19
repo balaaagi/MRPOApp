@@ -1,4 +1,4 @@
-package sunshine.balaaagi.me.sunshine;
+package mrpo.balaaagi.me.mrpo;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
