@@ -53,17 +53,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        ConnectivityManager cMgr= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo=cMgr.getActiveNetworkInfo();
-//
-//        if(networkInfo!=null&&networkInfo.isConnected()){
-//            String mee="NEtwork is available";
-//            Toast.makeText(MainActivity.this,"Netwrok is there", Toast.LENGTH_SHORT).show();
-//
-//        }else{
-//            errorMessage="No NetWork";
-//            Toast.makeText(MainActivity.this,errorMessage,Toast.LENGTH_SHORT).show();
-//        }
 
 
 

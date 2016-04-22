@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -20,7 +21,8 @@ import android.widget.TextView;
 public class DetailActivityFragment extends Fragment {
     private static final String FORECAST_SHARE_HASHTAG=" #SunshineApp";
     private String mForecastStr;
-
+    TextView medicineName,noOfDays;
+    ImageView morning,noon,evening;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -29,11 +31,32 @@ public class DetailActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
         Intent intent=getActivity().getIntent();
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        if(intent!=null && intent.hasExtra(intent.EXTRA_TEXT)){
-            mForecastStr=intent.getStringExtra(intent.EXTRA_TEXT);
-            ((TextView)rootView.findViewById(R.id.forecast_details)).setText(mForecastStr);
+        if(intent!=null){
+            medicineName= (TextView) rootView.findViewById(R.id.medicine_name);
+            noOfDays= (TextView) rootView.findViewById(R.id.daysCount);
+            morning= (ImageView) rootView.findViewById(R.id.morningCheck);
+            noon= (ImageView) rootView.findViewById(R.id.noonCheck);
+            evening= (ImageView) rootView.findViewById(R.id.eveningCheck);
+
+            MedicineDetails currentMedicine= (MedicineDetails) intent.getParcelableExtra("MedicineDetails");
+            System.out.println(currentMedicine.getName());
+            medicineName.setText(currentMedicine.getName());
+
+            noOfDays.setText(String.valueOf(currentMedicine.getNoOfDays()) +" days");
+            if(currentMedicine.morning)
+                morning.setImageResource(R.drawable.check_mark);
+
+            if(currentMedicine.noon)
+                noon.setImageResource(R.drawable.check_mark);
+
+            if(currentMedicine.evening)
+                evening.setImageResource(R.drawable.check_mark);
         }
         return rootView;
     }

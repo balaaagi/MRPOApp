@@ -3,12 +3,10 @@ package mrpo.balaaagi.me.mrpo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
  * Created by balaaagi on 21/04/16.
  */
-public class MedicineDetails implements Serializable,Parcelable {
+public class MedicineDetails implements Parcelable {
     public String name;
     public int noOfDays;
     public boolean morning=false;
@@ -116,7 +114,7 @@ public class MedicineDetails implements Serializable,Parcelable {
         this.afterFood=Boolean.parseBoolean(in.readString());
     }
 
-    public static final Parcelable.Creator<MedicineDetails> CREATOR = new Parcelable.Creator<MedicineDetails>() {
+    public static final Parcelable.Creator<MedicineDetails> CREATOR = new Creator<MedicineDetails>() {
 
         @Override
         public MedicineDetails createFromParcel(Parcel source) {

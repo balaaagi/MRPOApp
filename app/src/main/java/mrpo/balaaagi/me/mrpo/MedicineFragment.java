@@ -90,32 +90,19 @@ public class MedicineFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView=inflater.inflate(R.layout.fragment_main, container, false);
-        ArrayList<String> fakeClimateData=new ArrayList<String>();
-        MedicineDetails fakeMedicines=new MedicineDetails("Medicine Name");
-        arrayOfMedicines.add(fakeMedicines);
-        fakeClimateData.add("Medicine Name  - Date of Prescription");
-        fakeClimateData.add("Medicine Name - Date of Prescription");
-        fakeClimateData.add("Medicine Name - Date of Prescription");
-        medicineadapter=new MedicineAdapter(getActivity(),arrayOfMedicines);
-//        climateAdapter=new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_prescription_textview,fakeClimateData);
-        final ListView climateListView = (ListView) rootView.findViewById(R.id.listview_precriptions);
-//        )
-        climateListView.setAdapter(medicineadapter);
+            medicineadapter=new MedicineAdapter(getActivity(),arrayOfMedicines);
+        final ListView medicineListView = (ListView) rootView.findViewById(R.id.listview_precriptions);
+        medicineListView.setAdapter(medicineadapter);
 
-        climateListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        medicineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String forecast=climateAdapter.getItem(i);
-                MedicineDetails singleMedicine= (MedicineDetails) climateListView.getItemAtPosition(i);
+                MedicineDetails singleMedicine= (MedicineDetails) medicineadapter.getItem(i);
                 System.out.println("Before Details"+singleMedicine.getName());
                 Intent detailIntent=new Intent(getActivity(),DetailActivity.class);
-                Bundle b=new Bundle();
-                b.putParcelable("MedicineDetails", singleMedicine);
-                detailIntent.putExtras(b);
-//                detailIntent.putExtra("MedicineDetails", (Parcelable) singleMedicine);
+                detailIntent.putExtra("MedicineDetails",singleMedicine);
                 startActivity(detailIntent);
 
-//                Toast.makeText(getActivity(),"This Item is clickd"+forecast,Toast.LENGTH_SHORT).show();
             }
         });
         return rootView;
@@ -126,7 +113,6 @@ public class MedicineFragment extends Fragment {
 
             JSONArray tempMedicinesArray=new JSONArray(jsonFromReader);
             ArrayList<MedicineDetails> medicinesData=new ArrayList<>();
-//            MedicineDetails[] medicinesData = new MedicineDetails[tempMedicinesArray.length()];
             for(int i=0;i<tempMedicinesArray.length();i++){
                 JSONObject singleMedicinePrescription=tempMedicinesArray.getJSONObject(i);
                 String medicine_name=singleMedicinePrescription.getString("medicine");
@@ -167,7 +153,8 @@ public class MedicineFragment extends Fragment {
                 for(Object medicine:medicines){
                     arrayOfMedicines.add((MedicineDetails) medicine);
                 }
-                Toast.makeText(getActivity(),"Prescriptions Synced Successfully!"+arrayOfMedicines.size(),Toast.LENGTH_LONG).show();
+                medicineadapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(),"Prescriptions Synced Successfully!"+arrayOfMedicines.size(),Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getActivity(),"No Network Try again!",Toast.LENGTH_LONG).show();
             }
