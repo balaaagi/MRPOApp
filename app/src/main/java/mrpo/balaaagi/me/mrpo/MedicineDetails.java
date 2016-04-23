@@ -3,6 +3,9 @@ package mrpo.balaaagi.me.mrpo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 /**
  * Created by balaaagi on 21/04/16.
  */
@@ -56,26 +59,36 @@ public class MedicineDetails implements Parcelable {
         this.name=name;
         this.noOfDays=Integer.parseInt(noOfDays);
         this.date=date;
+        System.out.println(daysInfo);
+        System.out.println(daysInfo.getClass());
         if(daysInfo instanceof String){
+            System.out.println("Omg Coming Here for String "+daysInfo);
             if(daysInfo.toString().equals("morning")){
                 this.morning=true;
             }else if(daysInfo.toString().equals("noon")){
                 this.noon=true;
-            }else{
+            }else if(daysInfo.toString().equals("evening")){
                 this.evening=true;
             }
-        }else if(daysInfo instanceof String[]){
-            String[] daysDetails=(String[]) daysInfo;
-            for(int i=0;i<daysDetails.length;i++){
-                if (daysDetails[i].equals("morning")){
-                    this.morning=true;
-                }else if(daysDetails[i].equals("noon")){
-                    this.noon=true;
-                }else{
-                    this.evening=true;
+        }else if(daysInfo  instanceof JSONArray){
+            System.out.println("Omg Coming Here for Array" +daysInfo);
+//            String[] daysDetails=(String[]) daysInfo;
+            JSONArray dayDetails= (JSONArray) daysInfo;
+            for(int i=0;i<((JSONArray) daysInfo).length();i++){
+                try {
+                    if (dayDetails.get(i).equals("morning")){
+                        this.morning=true;
+                    }else if(dayDetails.get(i).equals("noon")){
+                        this.noon=true;
+                    }else if(dayDetails.get(i).equals("evening")){
+                        this.evening=true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
             }
+
+
 
         }
         if(beforeFood.equals("before"))

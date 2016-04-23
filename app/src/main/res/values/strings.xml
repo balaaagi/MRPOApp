@@ -63,8 +63,8 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="pref_title_lcoation">Location</string>
-    <string name="pref_location_defaultValue">91500</string>
+    <string name="pref_title_lcoation">Patient ID</string>
+    <string name="pref_location_defaultValue">SA1234</string>
     <string name="pref_location_key">location</string>
     <string name="measurement_Settings_title">Measurement</string>
     <string name="measurement_key">measurement_unit</string>
