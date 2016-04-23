@@ -19,7 +19,7 @@ import android.widget.TextView;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment {
-    private static final String FORECAST_SHARE_HASHTAG=" #SunshineApp";
+    private static final String MRPO_HASHTAG=" #MRPO";
     private String mForecastStr;
     TextView medicineName,noOfDays;
     ImageView morning,noon,evening;
@@ -65,8 +65,9 @@ public class DetailActivityFragment extends Fragment {
         Intent shareIntent=new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         shareIntent.setType("text/plain");
+        String shareMessageText="My Doctor has advised me to take "+medicineName.getText()+" for "+noOfDays.getText()+".I have set a reminder for the same via MRPO app";
         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                mForecastStr+FORECAST_SHARE_HASHTAG);
+                shareMessageText+MRPO_HASHTAG);
         return shareIntent;
     }
 
