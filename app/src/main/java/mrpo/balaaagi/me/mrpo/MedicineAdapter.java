@@ -44,7 +44,7 @@ public class MedicineAdapter extends BaseAdapter {
         View rowView=inflater.inflate(R.layout.list_item_forecast,parent,false);
         TextView textLabel= (TextView) rowView.findViewById(R.id.list_item_prescription_textview);
         MedicineDetails temp= (MedicineDetails) medicines.get(position);
-        textLabel.setText(temp.getName()+"$$$"+temp.getDate());
+        textLabel.setText(temp.getName()+"--------------"+temp.getDate());
 
         return rowView;
     }
