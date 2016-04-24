@@ -62,7 +62,6 @@ public class MedicineDetails implements Parcelable {
         System.out.println(daysInfo);
         System.out.println(daysInfo.getClass());
         if(daysInfo instanceof String){
-            System.out.println("Omg Coming Here for String "+daysInfo);
             if(daysInfo.toString().equals("morning")){
                 this.morning=true;
             }else if(daysInfo.toString().equals("noon")){
@@ -71,7 +70,6 @@ public class MedicineDetails implements Parcelable {
                 this.evening=true;
             }
         }else if(daysInfo  instanceof JSONArray){
-            System.out.println("Omg Coming Here for Array" +daysInfo);
 //            String[] daysDetails=(String[]) daysInfo;
             JSONArray dayDetails= (JSONArray) daysInfo;
             for(int i=0;i<((JSONArray) daysInfo).length();i++){

@@ -62,26 +62,25 @@ public class MedicineFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        updateweather();
+        updatePrescriptions();
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id=item.getItemId();
         if(id==R.id.action_refresh){
-            updateweather();
+            updatePrescriptions();
             return true;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateweather() {
+    private void updatePrescriptions() {
         FetchWeatherTask weatherTask=new FetchWeatherTask();
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String location=prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_defaultValue));
-        String units=prefs.getString("measurement_unit","metric");
-        weatherTask.execute("600096","Farenheit");
+        String patient_id=prefs.getString(getString(R.string.pref_patient_key), getString(R.string.pref_patient_id_defaultValue));
+        weatherTask.execute(patient_id);
     }
 
 
@@ -125,10 +124,11 @@ public class MedicineFragment extends Fragment {
                 try {
 
                     Date date = formatter.parse(dateOfPrescription);
+
                     Calendar cal=Calendar.getInstance();
                     cal.setTime(date);
-                    formattedDateOfPrescription=cal.get(Calendar.DATE)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR);
-                    System.out.println(formattedDateOfPrescription);
+                    int month=cal.get(Calendar.MONTH)+1;
+                    formattedDateOfPrescription=cal.get(Calendar.DATE)+"-"+month+"-"+cal.get(Calendar.YEAR);
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -137,7 +137,7 @@ public class MedicineFragment extends Fragment {
                 if(singleMedicinePrescription.has("foodBefore"))
                     foodBefore=singleMedicinePrescription.getString("foodBefore");
                 MedicineDetails currentPatientMedicalDetails=new MedicineDetails(medicine_name,days,daysInfo,foodBefore,formattedDateOfPrescription);
-                Log.d(LOG_TAG,"index "+i);
+//                Log.d(LOG_TAG,"index "+i);
                 medicinesData.add(currentPatientMedicalDetails);
 //                medicinesData[i]=currentPatientMedicalDetails;
             }
@@ -154,7 +154,7 @@ public class MedicineFragment extends Fragment {
                     arrayOfMedicines.add((MedicineDetails) medicine);
                 }
                 medicineadapter.notifyDataSetChanged();
-                Toast.makeText(getActivity(),"Prescriptions Synced Successfully!"+arrayOfMedicines.size(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Prescriptions Synced Successfully!",Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getActivity(),"No Network Try again!",Toast.LENGTH_LONG).show();
             }
@@ -166,16 +166,13 @@ public class MedicineFragment extends Fragment {
                     BufferedReader reader=null;
                     String jsonFromReader=null;
             String format="json";
-            String units=strings[1];
+//            String units=strings[1];
+            String patient_id=strings[0];
             int countOfDays=7;
             String[] weatherDataFromJSON=null;
                     try{
-                        final String BASE_URL="http://labs.balaaagi.me:6200/getPrescriptions/SA1234";
-                        final String QUERY_PARAM="q";
-                        final String FORMAT_PARAM="mode";
-                        final String UNITS_PARAM="units";
-                        final String DAYS_PARAM="cnt";
-
+//                        final String BASE_URL="http://labs.balaaagi.me:6200/getPrescriptions/SA1234";
+                        final String BASE_URL="http://labs.balaaagi.me:6200/getPrescriptions/"+patient_id;
                         ConnectivityManager cmgr=(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                         NetworkInfo ntwInfo=cmgr.getActiveNetworkInfo();
                         if(ntwInfo!=null && ntwInfo.isConnected()){

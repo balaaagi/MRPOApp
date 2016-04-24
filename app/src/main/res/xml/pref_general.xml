@@ -4,8 +4,8 @@
 
     <EditTextPreference
         android:title="@string/pref_title_lcoation"
-        android:defaultValue="@string/pref_location_defaultValue"
-        android:key="@string/pref_location_key"
+        android:defaultValue="@string/pref_patient_id_defaultValue"
+        android:key="@string/pref_patient_key"
         android:inputType="text"
         android:singleLine="true">
 
